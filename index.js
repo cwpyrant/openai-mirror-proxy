@@ -1,3 +1,4 @@
+
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -25,7 +26,15 @@ app.post("/chat", async (req, res) => {
       model: "gpt-3.5-turbo",
     });
 
-    res.json({ reply: chatCompletion.choices[0].message.content });
+    console.log("OpenAI response:", chatCompletion);
+
+    const reply = chatCompletion.choices?.[0]?.message?.content;
+
+    if (!reply) {
+      return res.status(500).json({ error: "No reply from OpenAI." });
+    }
+
+    res.json({ reply });
   } catch (err) {
     console.error("OpenAI error:", err);
     res.status(500).json({ error: "Failed to get response from OpenAI." });
